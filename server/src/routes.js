@@ -30,4 +30,8 @@ module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)
+  // Post using a seperate conntrollers file
+  app.post('/login',
+    AuthenticationControllerPolicy.register,
+    AuthenticationController.login)
 }

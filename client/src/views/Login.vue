@@ -20,7 +20,7 @@
                 dark
                 flat
               >
-                <v-toolbar-title>Sign Up</v-toolbar-title>
+                <v-toolbar-title>Login</v-toolbar-title>
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
@@ -42,12 +42,12 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn @click="register" color="primary">Sign Up</v-btn>
+                <v-btn @click="login" color="primary">Login</v-btn>
               </v-card-actions>
             </v-card>
             <v-spacer />
             <v-alert
-              class="mt-4"
+              class="mt-4 transition-swing"
               v-if="error"
               border="right"
               colored-border
@@ -55,6 +55,16 @@
               elevation="12"
               transition="scale-transition">
               <span v-html="error"></span>
+            </v-alert>
+            <v-alert
+              class="mt-4 transition-swing"
+              v-if="login_ok"
+              border="right"
+              colored-border
+              type="success"
+              elevation="12"
+              transition="scale-transition">
+              <span>Login successfull!</span>
             </v-alert>
           </v-col>
         </v-row>
@@ -76,6 +86,7 @@ export default {
       email: "",
       password: "",
       error: false,
+      login_ok: false
     }
   },
   watch: {
@@ -89,16 +100,19 @@ export default {
     // }, 2000)
   },
   methods: {
-    async register () {
+    async login () {
       try {
-        const res = await AuthenticationService.register({
+        const res = await AuthenticationService.login({
           email: this.email,
           password: this.password
         }) 
-        console.log(res.data)
+        if (res.data.user) {
+          this.error = false
+          this.login_ok = true
+        }
       } catch (error) {
         this.error = error.response.data.error
-        console.log(error.response.data)
+        this.login_ok = false
       }
     }
   }
