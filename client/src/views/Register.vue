@@ -13,6 +13,7 @@
       name="password"
       placeholder="Password" />
     <br />
+    <div class="error" v-html="error" />
     <button
       @click="register">Register</button>
   </div>
@@ -25,7 +26,8 @@ export default {
   data () {
     return {
       email: "abc",
-      password: "123"
+      password: "123",
+      error: null,
     }
   },
   watch: {
@@ -40,13 +42,24 @@ export default {
   },
   methods: {
     async register () {
-      console.log("Button click")
-      const res = await AuthenticationService.register({
-        email: this.email,
-        password: this.password
-      }) 
-      console.log(res.data)
+      try {
+        console.log("Button click")
+        const res = await AuthenticationService.register({
+          email: this.email,
+          password: this.password
+        }) 
+        console.log(res.data)
+      } catch (error) {
+        this.error = error.response.data.error
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+.error {
+  color: red;
+  font-size: 0.6em; 
+}
+</style>
