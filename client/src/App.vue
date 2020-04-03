@@ -14,22 +14,23 @@
           transition="scale-transition"
           width="40"
         />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <v-toolbar-title> 
+          <router-link
+            class="home"
+            tag="span"
+            :to="{
+              name: 'home'
+            }">
+            Songify</router-link>
+        </v-toolbar-title>
       </div>
-
       <v-spacer></v-spacer>
-      <v-btn text color="white" to="/">Home</v-btn>
-      <v-btn text color="white" to="/about">About</v-btn> 
-      <v-btn text color="white" to="/login">Login</v-btn> 
-      <v-btn to="/register">SIGN UP</v-btn>
+      <v-btn class="mx-1" depressed color="white" text small @click="navigateTo({name: 'home'})">Home</v-btn>
+      <v-btn class="mx-1" depressed color="white" outlined small @click="navigateTo({name: 'songs'})">Browse</v-btn>
+      <!-- <v-btn depressed color="white" text small @click="navigateTo({name: 'about'})">About</v-btn>  -->
+      <v-btn class="mx-1" depressed color="secondary" small @click="navigateTo({name: 'register'})">SIGN UP</v-btn>
+      <v-btn class="mx-1" depressed color="white" text small v-if="!$store.state.isUserLoggedIn" @click="navigateTo({name: 'login'})">Login</v-btn> 
+      <v-btn class="mx-1" depressed color="white" text small v-if="$store.state.isUserLoggedIn" @click="logout">Logout</v-btn> 
 
     </v-app-bar>
 
@@ -48,9 +49,22 @@ export default {
   components: {
     // HelloWorld,
   },
-
-  data: () => ({
-    //
-  }),
+  data () {
+    return {
+      email: "",
+    }
+  },
+  methods: {
+    async logout() {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      this.$router.push({
+        name: ' songs'
+      })
+    },
+    async navigateTo (route) {
+      this.$router.push(route)
+    }
+  }
 };
 </script>

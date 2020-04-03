@@ -1,5 +1,6 @@
 const graphqlHTTP = require('express-graphql')
 const { buildSchema } = require('graphql')
+const SongsController = require('./controllers/SongsController')
 const AuthenticationController = require('./controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
 
@@ -30,8 +31,16 @@ module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)
-  // Post using a seperate conntrollers file
   app.post('/login',
-    AuthenticationControllerPolicy.register,
     AuthenticationController.login)
+  app.get('/songs',
+    SongsController.index)
+  app.get('/songs/:songId',
+    SongsController.show)
+  app.delete('/songs/:songId',
+    SongsController.delete)
+  app.put('/songs/:songId',
+    SongsController.put)
+  app.post('/songs',
+    SongsController.create)
 }

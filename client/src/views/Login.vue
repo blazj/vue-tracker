@@ -105,11 +105,17 @@ export default {
         const res = await AuthenticationService.login({
           email: this.email,
           password: this.password
-        }) 
+        })
+        this.$store.dispatch('setToken', res.data.token)
+        this.$store.dispatch('setUser', res.data.user)
+        console.log(res.data)
         if (res.data.user) {
           this.error = false
           this.login_ok = true
         }
+        this.$router.push({
+          name: 'songs'
+        })
       } catch (error) {
         this.error = error.response.data.error
         this.login_ok = false

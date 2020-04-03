@@ -7,12 +7,12 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home
   },
   {
     path: '/about',
-    name: 'About',
+    name: 'about',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -20,14 +20,38 @@ const routes = [
   },
   {
     path: '/register',
-    name: 'SIGN UP',
+    name: 'register',
     component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
   },
+  {
+    path: '/songs',
+    name: 'songs',
+    component: () => import(/* webpackChunkName: "about" */ '../views/songs/Index.vue')
+  },
+  {
+    path: '/songs/create',
+    name: 'songs-create',
+    component: () => import(/* webpackChunkName: "about" */ '../views/CreateSong.vue')
+  },
+  {
+    path: '/songs/:songId',
+    name: 'song',
+    component: () => import(/* webpackChunkName: "about" */ '../views/ViewSong.vue')
+  },
+  {
+    path: '/songs/:songId/edit',
+    name: 'song-edit',
+    component: () => import(/* webpackChunkName: "about" */ '../views/EditSong.vue')
+  },
+  {
+    path: '*',
+    redirect: '/songs'
+  }
 ]
 
 const router = new VueRouter({

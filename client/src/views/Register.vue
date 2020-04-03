@@ -24,7 +24,7 @@
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form autocomplete="off">
                   <v-text-field
                     v-model="email"
                     label="Email"
@@ -37,7 +37,8 @@
                     label="Password"
                     name="password"
                     prepend-icon="lock"
-                    type="password"/>
+                    type="password"
+                    autocomplete="new-password"/>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -76,6 +77,7 @@ export default {
       email: "",
       password: "",
       error: false,
+      login_ok: false
     }
   },
   watch: {
@@ -95,9 +97,16 @@ export default {
           email: this.email,
           password: this.password
         }) 
+        this.$store.dispatch('setToken', res.data.token)
+        this.$store.dispatch('setUser', res.data.user)
+        this.login_ok = true
         console.log(res.data)
+        this.$router.push({
+          name: 'login'
+        })
       } catch (error) {
         this.error = error.response.data.error
+        this.login_ok = false
         console.log(error.response.data)
       }
     }
