@@ -81,9 +81,9 @@ export default {
     }
   },
   watch: {
-    email(value) {
-      console.log("email has changed", value)
-    }
+    // email(value) {
+      // console.log("email has changed", value)
+    // }
   },
   mounted () {
     // setTimeout(() => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 songs">
+  <div>
     <panel title="Search">
       <div slot="panel">
         <v-row class="justify-center">
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+  import _ from 'lodash'
 
 export default {
 

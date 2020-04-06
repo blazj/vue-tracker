@@ -1,5 +1,4 @@
 console.log('Hello server here!')
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -12,6 +11,7 @@ app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
 
+require('./passport')
 require('./routes')(app)
 
 // { force: true }

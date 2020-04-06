@@ -1,7 +1,17 @@
 <template>
   <div class="mt-4 songs">
-    <songs-search-panel></songs-search-panel>
-    <songs-panel></songs-panel>
+    <v-container>
+      <v-row>
+        <v-col cols="sm">
+          <songs-search-panel></songs-search-panel>
+          <songs-panel></songs-panel>
+        </v-col>
+        <v-col v-if="isUserLoggedIn" cols="sm">
+          <bookmarks-table></bookmarks-table>
+          <recently-viewed></recently-viewed>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -9,11 +19,22 @@
 import SongsService from '@/services/SongsService'
 import SongsPanel from '@/views/songs/SongsPanel.vue';
 import SongsSearchPanel from '@/views/songs/SongsSearchPanel.vue';
+import BookmarksTable from '@/views/songs/BookmarksTable.vue';
+import RecentlyViewed from '@/views/songs/RecentlyViewed.vue';
+import {mapState} from 'vuex'
 
 export default {
   components: {
     SongsPanel,
-    SongsSearchPanel
+    SongsSearchPanel,
+    BookmarksTable,
+    RecentlyViewed
+  },
+  computed: {
+    ...mapState([
+      'isUserLoggedIn',
+      'user'
+    ])
   },
   data () {
     return {

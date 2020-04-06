@@ -57,17 +57,19 @@
                   </v-img>
                 </v-col>
               </v-row>
-              <v-row class="mb-4 justify-end">
-                <v-col :cols="6">
-                  <v-btn depressed color="primary" @click="navigateTo({
+              <v-row class="mb-4 justify-center">
+                <v-col :cols="12">
+                  <v-btn class="mx-1" depressed color="primary" @click="navigateTo({
                     name: 'songs',
                   })">Back</v-btn>
+                  <v-btn v-if="$store.state.isUserLoggedIn && !bookmark" class="mx-1" depressed dark color="gold" @click="markAsBookmark">Bookmark</v-btn>
+                  <v-btn v-if="$store.state.isUserLoggedIn && bookmark" class="mx-1" depressed dark color="green" @click="markAsUnbookmark">Bookmarked</v-btn>
                   <v-btn class="mx-1" depressed outlined color="primary" @click="navigateTo({
                     name: 'song-edit',
                     params: {
                       songId: song.id
                     }})">Edit</v-btn>
-                  <v-btn outlined depressed color="error" @click="deleteSong">
+                  <v-btn class="mx-1" outlined depressed color="error" @click="deleteSong">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </v-col>
@@ -89,18 +91,60 @@
 
 <script>
   import SongsService from '@/services/SongsService'
+  import BookmarkService from '@/services/BookmarkService'
+  import SongsHistoryService from '@/services/SongsHistoryService'
+  import {mapState} from 'vuex'
 
   export default {
     data () {
       return {
         song: {},
-        songId: null
+        songId: null,
+        bookmark: null
       }
     },
+    computed: {
+      ...mapState([
+        'isUserLoggedIn',
+        'user',
+        'route'
+      ])
+    },
+    watch: {
+      async song () {
+        if (!this.isUserLoggedIn) {
+          return;
+        } else {
+          try {
+            const bookmarks = (await BookmarkService.index({
+                songId: this.songId
+              })).data
+            if (bookmarks.length) {
+              this.bookmark = bookmarks[0]
+            } else {
+              this.bookmark = null
+            }
+            console.log('bookmark state: ', this.bookmark)
+          } catch (err) {
+            console.log(err)
+          } 
+        }
+      } 
+    },
     async mounted () {
-      this.songId = this.$store.state.route.params.songId
-      this.song = (await SongsService.show(this.songId)).data
-      console.log(this.song)
+      try {
+        this.songId = this.route.params.songId
+        this.song = (await SongsService.show(this.songId)).data
+
+        if (this.isUserLoggedIn) {
+          await SongsHistoryService.post({
+            songId: this.songId,
+          })
+        }
+
+      } catch (err) {
+        console.log(err)
+      }
     },
     methods: {
       songClick (songURL) {
@@ -114,6 +158,34 @@
       navigateTo (route) {
         this.$router.push(route)
       },
+      async markAsBookmark () {
+        console.log("bookmark")
+        try {
+          this.bookmark = (await BookmarkService.post({
+            SongId: this.songId,
+          })).data
+          console.log("bookmark: ", this.bookmark)
+        } catch (err) {
+          console.log(err)
+        }
+      },
+      async markAsUnbookmark () {
+        console.log("unbookmark")
+        console.log("bookmark id: ", this.bookmark.id)
+        try {
+          await BookmarkService.delete(this.bookmark.id)
+          this.bookmark = null
+          // this.fetchBookmark()
+        } catch (err) {
+          console.log(err)
+        }
+      },
+      async fetchBookmark () {
+        this.bookmark = (await BookmarkService.index({
+            songId: this.songId,
+          })).data
+        console.log('bookmark state: ', this.bookmark)
+      }
     }
   }
 </script>
